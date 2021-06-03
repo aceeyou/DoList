@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.13.0/Sortable.min.js" referrerpolicy="no-referrer"></script>
+
+    <link rel="icon" href="images/checkmark-green.png">
+    <title>Draggable Items</title>
+</head>
+<body>
+
+    <div class="container">
+        <div class="todo">
+            <div class="title"><img src="images/checkmark-green.png" alt=""><h1>Do List</h1></div>
+
+            <div class="input-container">
+                <div>
+                    <p>Task:</p>
+                    <form action="">
+                        <input id="user-input" type="text" placeholder="Enter your task here">
+                        <button id="enter-btn"> <img src="images/plus-white.png"> </button>
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="inner-container">
+                <div class="task-container">
+                    <div class="new">
+                        <h3>DoList</h3>
+                        <p id="task-count"></p>
+                        
+                    </div>
+                    <div class="tasks">
+                        <div class="list" id="todolist">
+
+                            <!-- All tasks goes here -->
+                            
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="done-container">
+                    <div class="done-task">
+                        
+                        <div class="task-container">
+                            <button class="goback" onclick="hideDoneTasks()"><img src="images/arrow.png" alt=""></button>
+                            <div class="new">
+                                <h3>Done List</h3>
+                                <p class="donetask-count">3</p>
+                            </div>
+                            <div class="tasks">
+                                <div class="list" id="done-list">
+                                                                        
+                                    <!-- done tasks goes here -->
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button onclick="displayDoneScreen()" class="donelist-btn">See Done List <span class="done-count donetask-count">99</span></button>
+        </div>
+        
+
+        <!-- Breadcrumbs -->
+        <div class="breadcrumb added-todo">
+            <h3>New task has been added</h3>
+        </div>
+        
+        <div class="breadcrumb item-deleted">
+            <h3>A task has been removed</h3>
+            <button onclick="undoDelete()" class="undo"> undo </button>
+        </div>
+        
+    </div>
+    
+    <script src="main.js"></script>
+    <script src="Sortable.js"></script>
+</body>
+</html>

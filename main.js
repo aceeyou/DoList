@@ -307,6 +307,7 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+
 getData();
 saveData();
 
@@ -321,24 +322,15 @@ mydoneJson = localStorage.setItem("doneJSON", JSON.stringify(doneArr));
 // showing notification
 
 function showNotification(){
-    // const notification = new Notification("Do List: Finish you tasks", {
-    //     body: "Have you finished anything today?",
-    //     icon: "images/checkmark-green.png",
-    //     showTrigger: new TimestampTrigger(timestamp + 5 * 1000),
-    // });
+    const notification = new Notification("Do List: Finish you tasks", {
+        body: "Have you finished anything today?",
+        icon: "images/checkmark-green.png",
+        showTrigger: new TimestampTrigger(timestamp + 5 * 1000),
+    });
 
-    // notification.onclick = (e) => {
-    //     window.location.href = "index.html";
-    // };
-
-    const createScheduledNotification = async (tag, title, timestamp) => {
-        const registration = await navigator.serviceWorker.getRegistration();
-        registration.showNotification(title, {
-          tag: tag,
-          body: 'This notification was scheduled 5 seconds ago',
-          showTrigger: new TimestampTrigger(timestamp + 5 * 1000),
-        });
-    };
+    notification.onclick = (e) => {
+        window.location.href = "index.html";
+    };    
 }
 
 // Notification Feature

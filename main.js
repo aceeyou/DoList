@@ -17,11 +17,11 @@ let arr = [];
 let delArr = [];
 let doneArr = [];
 
-let obj;
-const taskNodes = list.children;
-
 let myJSON;
 let mydoneJson;
+
+let obj;
+const taskNodes = list.children;
 
 let index=0;
 
@@ -52,7 +52,7 @@ function addTodo(value){
 }
 
 
-// Delete task
+// Delete Do task
 function deleteTask(e){
     let i=0;
     let text = e.innerText;
@@ -73,10 +73,11 @@ function deleteTask(e){
 
 // Save data to todo localstorage
 function saveData(){
-    let str = JSON.stringify(arr)
-    localStorage.setItem("todoJSON", str)
+    let str = JSON.stringify(arr);
+    localStorage.setItem("todoJSON", str);
     getData();
-    addSuccessBread();
+
+    hasReloaded();
 }
 
 // Get Data from localstorage
@@ -84,7 +85,7 @@ function getData(){
     let str = localStorage.getItem("todoJSON");
     arr = JSON.parse(str);
     if(!str){
-        myJSON = localStorage.setItem("todoJSON", JSON.stringify(arr))
+        myJSON = localStorage.setItem("todoJSON", JSON.stringify(arr));
     }
     displayTasks(arr);
 }
@@ -208,12 +209,33 @@ function placeDoneList(doneArr){
     }
 }
 
+// Delete Done task
+function deleteTask(e){
+    let i=0;
+    let text = e.innerText;
+    delArr.unshift(text);   // adds text to delete array for undo purposes
+    
+    while(i < arr.length){
+        if(doneArr[i] === text){
+            doneArr.splice(i, 1);
+            console.log("Item removed");
+            break;
+        }
+        i++;
+    }
+    deleteBread();
+    e.remove();
+    saveDoneData();
+}
+
 // Display the pop up display for Done List
 function displayDoneScreen(){
     document.querySelector(".input-container").style.opacity = ".2";
     taskContainer.style.opacity = ".2";
     document.querySelector(".title").style.opacity = ".2"
+    document.querySelector('.donelist-btn').style.opacity = "0.2";
 
+    doneContainer.style.opacity = "1";
     doneContainer.style.display = "flex";    
 }
 
@@ -224,6 +246,8 @@ function hideDoneTasks() {
     document.querySelector(".input-container").style.opacity = "1";
     taskContainer.style.opacity = "1";
     document.querySelector(".title").style.opacity = "1"
+    document.querySelector('.donelist-btn').style.opacity = "1";
+
 }
 
 // Checks whether user clicked outside the Done List div or not
@@ -289,24 +313,38 @@ saveData();
 getDoneTask();
 saveDoneData();
 
+myJSON = localStorage.setItem("todoJSON", JSON.stringify(arr));
+mydoneJson = localStorage.setItem("doneJSON", JSON.stringify(doneArr));
+
+
 
 // showing notification
 
 function showNotification(){
-    const notification = new Notification("Do List: Finish you tasks", {
-        body: "Have you finished anything today?",
-        icon: "images/checkmark-green.png"
-    });
+    // const notification = new Notification("Do List: Finish you tasks", {
+    //     body: "Have you finished anything today?",
+    //     icon: "images/checkmark-green.png",
+    //     showTrigger: new TimestampTrigger(timestamp + 5 * 1000),
+    // });
 
-    notification.onclick = (e) => {
-        window.location.href = "index.html";
+    // notification.onclick = (e) => {
+    //     window.location.href = "index.html";
+    // };
+
+    const createScheduledNotification = async (tag, title, timestamp) => {
+        const registration = await navigator.serviceWorker.getRegistration();
+        registration.showNotification(title, {
+          tag: tag,
+          body: 'This notification was scheduled 5 seconds ago',
+          showTrigger: new TimestampTrigger(timestamp + 5 * 1000),
+        });
     };
 }
 
 // Notification Feature
 console.log(Notification.permission);
 if(Notification.permission === "granted"){
-    showNotification();
+    // showNotification();
 } else if (Notification.permission !== "denied") {
     Notification.requestPermission().then(permission => {
         if(permission ==="granted"){
@@ -315,29 +353,45 @@ if(Notification.permission === "granted"){
     });
 }
 
+// Checks if the page has been refreshed or reloaded
+function hasReloaded(){
+    //check for Navigation Timing API support
+    if (window.performance) {
+        console.info("window.performance works fine on this browser");
+    }
+    console.info(performance.navigation.type);
+    if (performance.navigation.type == performance.navigation.TYPE_RELOAD) {
+        console.info( "This page is reloaded" );
+    } else {
+        console.info( "This page is not reloaded");
+        addSuccessBread();
+    }
+}
+
 
 
 
 // Sortable functions : makes items draggable and sortable
 
 new Sortable(list, {
-    handle: ".handle",
+    // handle: ".handle",
     delay: 1,
-    delayOnTouchOnly: true,
+    delayOnTouchOnly: false,
     preventOnFilter: true,
     animation: 300,
     onUpdate: function () {
-        grabItems()
+        getData()
     }
 })
 
 new Sortable(doneList, {
-    handle: ".handle",
+    // handle: ".handle",
     delay: 1,
-    delayOnTouchOnly: true,
+    delayOnTouchOnly: false,
     preventOnFilter: true,
     animation: 300,
     onUpdate: function () {
         saveDoneData();
     }
 })
+

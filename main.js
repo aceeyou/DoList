@@ -306,7 +306,6 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-
 getData();
 saveData();
 
@@ -339,7 +338,7 @@ function showNotification(){
 // Notification Feature
 console.log(Notification.permission);
 if(Notification.permission === "granted"){
-    // showNotification();
+    showNotification();
 } else if (Notification.permission !== "denied") {
     Notification.requestPermission().then(permission => {
         if(permission ==="granted"){

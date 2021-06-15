@@ -327,7 +327,6 @@ function showNotification(){
     const notification = new Notification("Do List: Finish you tasks", {
         body: "Have you finished anything today?",
         icon: "images/checkmark-green.png",
-        showTrigger: new TimestampTrigger(timestamp + 5 * 1000),
     });
 
     notification.onclick = (e) => {

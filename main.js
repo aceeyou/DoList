@@ -14,16 +14,15 @@ let taskCount = document.querySelector("#task-count");
 let bread = document.querySelector(".item-deleted");
 let addedBread = document.querySelector(".added-todo");
 let arr = [];
-let delArr = [];
 let doneArr = [];
+let delArr = [];
+let index=0;
 
 let myJSON;
 let mydoneJson;
 
-let obj;
 const taskNodes = list.children;
 
-let index=0;
 
 
 // Grab input of user
@@ -47,46 +46,26 @@ if(delBtn){
 function addTodo(value){
     arr.unshift(value);
     saveData();
-    
-    // console.log(value.innerText);
-}
-
-
-// Delete Do task
-function deleteTask(e){
-    let i=0;
-    let text = e.innerText;
-    delArr.unshift(text);   // adds text to delete array for undo purposes
-    
-    while(i < arr.length){
-        if(arr[i] === text){
-            arr.splice(i, 1);
-            console.log("Item removed");
-            break;
-        }
-        i++;
-    }
-    deleteBread();
-    e.remove();
-    saveData();
 }
 
 // Save data to todo localstorage
 function saveData(){
-    let str = JSON.stringify(arr);
-    localStorage.setItem("todoJSON", str);
+    localStorage.setItem("todoJSON", JSON.stringify(arr));
     getData();
-
-    hasReloaded();
+    
+    // hasReloaded();
 }
 
 // Get Data from localstorage
 function getData(){
     let str = localStorage.getItem("todoJSON");
     arr = JSON.parse(str);
-    if(!str){
-        myJSON = localStorage.setItem("todoJSON", JSON.stringify(arr));
+    if(!arr){
+        arr = [];
     }
+    // if(!str){
+    //     myJSON = localStorage.setItem("todoJSON", JSON.stringify(arr));
+    // }
     displayTasks(arr);
 }
 
@@ -121,6 +100,26 @@ function displayTasks(myJson){
     }
 }
 
+// Delete Do task
+function deleteTask(e){
+    console.log("hey delete");
+    let i=0;
+    let text = e.innerText;
+    delArr.unshift(text);   // adds text to delete array for undo purposes
+    console.log(text);
+    while(i < arr.length){
+        if(arr[i] === text){
+            arr.splice(i, 1);
+            console.log("Item removed");
+            break;
+        }
+        i++;
+    }
+    deleteBread();
+    // console.log(`delArr: ${delArr}`);
+    saveData();
+    e.remove();
+}
 
 
 
@@ -201,7 +200,7 @@ function placeDoneList(doneArr){
             <p class="task-text">${doneArr[i]}</p>
             <div class="buttons">
             <button onclick="addFromDone(this.parentNode.parentNode)" class="done-btn"><img class="done" src="images/checkmark-black.png" alt=""></button>
-            <button onclick="deleteTask(this.parentNode.parentNode)" class="delete-btn"><img class="delete" src="images/del.png" alt=""></button>
+            <button onclick="deleteDoneTask(this.parentNode.parentNode)" class="delete-btn"><img class="delete" src="images/del.png" alt=""></button>
             </div>
             </div>
             `;
@@ -210,12 +209,12 @@ function placeDoneList(doneArr){
 }
 
 // Delete Done task
-function deleteTask(e){
+function deleteDoneTask(e){
     let i=0;
     let text = e.innerText;
     delArr.unshift(text);   // adds text to delete array for undo purposes
     
-    while(i < arr.length){
+    while(i < doneArr.length){
         if(doneArr[i] === text){
             doneArr.splice(i, 1);
             console.log("Item removed");
@@ -314,8 +313,12 @@ saveData();
 getDoneTask();
 saveDoneData();
 
-myJSON = localStorage.setItem("todoJSON", JSON.stringify(arr));
-mydoneJson = localStorage.setItem("doneJSON", JSON.stringify(doneArr));
+if(myJSON === null){
+    myJSON = localStorage.setItem("todoJSON", JSON.stringify(arr));
+}
+if(mydoneJson === null){
+    mydoneJson = localStorage.setItem("doneJSON", JSON.stringify(doneArr));
+}
 
 
 
@@ -348,9 +351,6 @@ if(Notification.permission === "granted"){
 // Checks if the page has been refreshed or reloaded
 function hasReloaded(){
     //check for Navigation Timing API support
-    if (window.performance) {
-        console.info("window.performance works fine on this browser");
-    }
     console.info(performance.navigation.type);
     if (performance.navigation.type == performance.navigation.TYPE_RELOAD) {
         console.info( "This page is reloaded" );
